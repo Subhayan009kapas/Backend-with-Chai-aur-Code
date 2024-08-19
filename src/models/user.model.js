@@ -1,7 +1,7 @@
 import mongoose , {Schema} from "mongoose";
 
-import jwt from "jsonwebtoken"
-import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"  // generate token
+import bcrypt from "bcrypt"  // Encript od decript the password 
 
 const userSchema = new Schema({
           username:{
@@ -51,20 +51,24 @@ const userSchema = new Schema({
           }
 },{timestamps:true})
 
+
+//**bcrypt: user er password ke encript kore  unreadable password e transfer kore
 userSchema.pre("save" , async function(next){
-          if(!this.isModified("password")) return next();
+          if(!this.isModified("password")) return next();  // it's check the password is modified or Not , (If tt's not modified it will exit...)  
           this.password = bcrypt.hash(this.password ,10)
           next()
 })
 
+// User er input passworder sathe Database er password er compare kore 
 userSchema.methods.isPasswordCorrect= async function (password){
        return await bcrypt.compare(password , this.password)
 }
 
+// generate  accesstoken  
 userSchema.methods.generateAccessToken=function(){
         return jwt.sign(
                     {
-                              _id:this.id,
+                              _id:this.id,  // payload
                               email:this.email,
                               username:this.username,
                               fullname:this.fullname,
@@ -78,6 +82,7 @@ userSchema.methods.generateAccessToken=function(){
 
 }
 
+// generate refreshtoken
 userSchema.methods.generateRefreshToken =function(){
           return jwt.sign(
                     {
