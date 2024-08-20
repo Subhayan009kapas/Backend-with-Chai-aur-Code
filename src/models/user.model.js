@@ -55,7 +55,7 @@ const userSchema = new Schema({
 //**bcrypt: user er password ke encript kore  unreadable password e transfer kore
 userSchema.pre("save" , async function(next){
           if(!this.isModified("password")) return next();  // it's check the password is modified or Not , (If tt's not modified it will exit...)  
-          this.password = bcrypt.hash(this.password ,10)
+          this.password = await bcrypt.hash(this.password ,10)
           next()
 })
 
