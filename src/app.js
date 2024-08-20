@@ -15,4 +15,17 @@ app.use(express.urlencoded({extended:true , limit:"16kb"})) // encode the url
 app.use(express.static("public"))  // for pdf , images 
 app.use(cookieParser())
 
+
+//Routes import
+
+import userRouter from './routes/user.routes.js'
+
+
+//routes declaration
+
+app.use("/api/v1/users" , userRouter)
+
+ //the url will be ...
+// http://localhost:8000/api/v1/users/register
+
 export {app}
