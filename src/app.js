@@ -13,7 +13,8 @@ app.use(cors({
 app.use(express.json({limit:"16kb"}))  // if the data is in the json format 
 app.use(express.urlencoded({extended:true , limit:"16kb"})) // encode the url
 app.use(express.static("public"))  // for pdf , images 
-app.use(cookieParser())
+app.use(cookieParser()) 
+// by this we can accses cookie in any where in my project 
 
 
 //Routes import
