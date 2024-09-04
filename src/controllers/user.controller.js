@@ -239,7 +239,10 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 })
  
-// refresh Token  Generate Foe dataBase For Users 
+
+
+// -------Refresh Accesss  Token   For Users ---------
+
 const refreshAccessToken = asyncHandler(async(req , res )=>{
 
  // collect refreshtoken sending By User 
@@ -259,6 +262,8 @@ const refreshAccessToken = asyncHandler(async(req , res )=>{
 
    )
 
+   // find he id of the user through the decoded token 
+
    const user = await User.findById(decodedToken?._id)
 
    if(!user){
@@ -268,19 +273,25 @@ const refreshAccessToken = asyncHandler(async(req , res )=>{
    }
 
    // Check(User freshtoken  Vs  Data Base refresh Token ) 
+
    if(incomingRefreshToken !== user?.refreshToken){
 
       throw new ApiError(401 ," Refresh Token is expired or used")
    }
 
+   // security purpose
+   
    const options={
       httpOnly:true ,
       secure :true ,
 
    }
 
+   // generarte new refresh token and the access token 
+
   const {accesstoken , newrefreshToken}=await generateAccessAndRefreshTokens(user._id)
 
+  // return responses 
   return res 
   .status(200)
   .cookie("accessToken" ,accesstoken ,options)
