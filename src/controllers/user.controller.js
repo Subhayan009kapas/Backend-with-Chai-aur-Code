@@ -314,15 +314,16 @@ const refreshAccessToken = asyncHandler(async(req , res )=>{
 // Chanege Current Password 
 const changeCurrentPassword =asyncHandler(async(req, res)=>{
 
-   const{oldPassword , newPassword} = req.body
+   const{oldPassword , newPassword} = req.body  // old password is required to change the password 
    const user = await User.findById(req.user?._id)
    const isPasswordCorrect= await user.isPasswordCorrect(oldPassword)
 
    if(!isPasswordCorrect){
       throw new ApiError(400 , "Inavlid old password")
    }
-   user.password=newPassword
-   await user.save({validateBeforeSave :false})
+   user.password=newPassword  // password is updated 
+
+   await user.save({validateBeforeSave :false}) // save the password 
 
    return res
    .status(200)
@@ -365,7 +366,7 @@ const updateAccountDetails = asyncHandler(async(req, res)=>{
 
 // ---------Update Avatar----------
 const updateUserAvatar=asyncHandler(async(req ,res)=>{
-   
+
    const avatarLocalPath= req.file?.path
    if(!avatarLocalPath){
       throw new ApiError(400 , "Avatar file is missing")
