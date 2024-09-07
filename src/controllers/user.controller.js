@@ -249,12 +249,12 @@ const refreshAccessToken = asyncHandler(async(req , res )=>{
    const incomingRefreshToken= req.cookies.refreshToken|| req .body.refreshToken
 
    // check  refreshtoken
-   if(incomingRefreshToken){
+   if(!incomingRefreshToken){
 
       throw new ApiError(401 ,"unauthorized request ")
 
    }
-// Verify By Jwt and create decoded values 
+// Verify By Jwt and create decoded token by which user will be find out 
   try{
    const decodedToken = jwt.verify(
       incomingRefreshToken,
@@ -262,7 +262,7 @@ const refreshAccessToken = asyncHandler(async(req , res )=>{
 
    )
 
-   // find he id of the user through the decoded token 
+   // find he id of the user through the decodedToken 
 
    const user = await User.findById(decodedToken?._id)
 
@@ -272,7 +272,7 @@ const refreshAccessToken = asyncHandler(async(req , res )=>{
 
    }
 
-   // Check(User freshtoken  Vs  Data Base refresh Token ) 
+   // Check user's (User freshtoken  Vs  Data Base refresh Token ) 
 
    if(incomingRefreshToken !== user?.refreshToken){
 
