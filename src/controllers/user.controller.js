@@ -524,7 +524,7 @@ const getWatchHistory = asyncHandler(async(req, res)=>{
                      foreignField:"_id",
                      as:"owner",
                      pipeline:[
-                        {
+                        { 
                            $project:{
                               fullname:1,
                               username:1,
