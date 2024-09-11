@@ -439,21 +439,22 @@ const getUserChannelProfile=asyncHandler(async(req,res)=>{
    // findout no of Subscribers 
    {  
       $lookup:{
-         from:"subscriptions",
-         localField:"_id",
-         foreignField:"channel",
-         as:"subscribers"
+         from:"subscriptions",//from which collection field will be add
+         localField:"_id", //field from the current user 
+         foreignField:"channel",//field  from the <from> collection.will be matched against the localField
+         as:"subscribers"//The name of the new field to add to the output documents
       }
    },
 
    // How many channel is sub Subscribed by me 
    {
       $lookup:{
-         from:"subscriptions",
-         localField:"_id",
-         foreignField:"subscriber",
-         as:"subscribedTo"
+         from:"subscriptions", // from which model field will be added
+         localField:"_id",  // it's the field of the current  user 
+         foreignField:"subscriber", // it's the field of the from
+         as:"subscribedTo" ,//The name of the new field to add to the output documents
       }
+      
    },
    // Add previous two field to User
    {
@@ -500,10 +501,10 @@ const getUserChannelProfile=asyncHandler(async(req,res)=>{
 })
 
 
-// Get  Watch History 
-
-const getWatchHistory = asyncHandler(async(req ,res)=>{
-   const user= await User.aggregate([
+// ---------Get  Watch History ---------------
+const getWatchHistory = asyncHandler(async(req, res)=>{
+     
+    const user =await User.aggregate([
       {
          $match:{
             _id:new mongoose.Types.ObjectId(req.user._id)
@@ -531,34 +532,32 @@ const getWatchHistory = asyncHandler(async(req ,res)=>{
                            }
                         }
                      ]
-
+                  }
+               },
+               {
+                  $addFields:{
+                     owner:{
+                        $first:"$owner" // gives a object 
+                     }
                   }
                }
             ]
-
-
-
-
          }
       },
-      {
-         $addFields:{
-            owner:{
-               $first:"$owner"
-            }
-         }
-      }
+    ])
 
-   ])
-
-   return res
-   .status(200)
-   .json(
+    return res
+    .status(200)
+    .json(
       new ApiResponse(
-         200 , user[0].watchHistory , "Watch History fetched successfully"
+         200 , 
+         user[0].watchHistory,
+         "Watch History Fetched Successfully "
       )
-   )
+    )
+     
 })
+
 
 export {
    registerUser,
@@ -572,5 +571,6 @@ export {
    updateUserCoverImage,
    getUserChannelProfile,
    getWatchHistory
+   
 
 }
