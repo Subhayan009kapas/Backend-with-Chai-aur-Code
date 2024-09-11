@@ -507,7 +507,7 @@ const getWatchHistory = asyncHandler(async(req, res)=>{
     const user =await User.aggregate([
       {
          $match:{
-            _id:new mongoose.Types.ObjectId(req.user._id)
+            _id:new mongoose.Types.ObjectId(req.user._id)  // create  id using mongoose 
          }
       },
       {
@@ -516,15 +516,15 @@ const getWatchHistory = asyncHandler(async(req, res)=>{
             localField:"watchHistory",
             foreignField:"_id",
             as:"watchHistory",
-            pipeline:[
+            pipeline:[    // in the watch history owner is missing 
                {
-                  $lookup:{
+                  $lookup:{    // again pipe line for owner 
                      from:"users",
                      localField:"owner",
                      foreignField:"_id",
                      as:"owner",
-                     pipeline:[
-                        { 
+                     pipeline:[   // i want some specific field of owner->
+                        {  
                            $project:{
                               fullname:1,
                               username:1,
@@ -537,7 +537,7 @@ const getWatchHistory = asyncHandler(async(req, res)=>{
                {
                   $addFields:{
                      owner:{
-                        $first:"$owner" // gives a object 
+                        $first:"$owner" // gives the deatils of owner in  an object Format
                      }
                   }
                }
